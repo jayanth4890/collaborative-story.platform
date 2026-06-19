@@ -30,11 +30,12 @@ services:
         sync: false
 
   # Frontend Static Site
-  - type: static
+  - type: web
     name: scribblecollab-web
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: dist
     routes:
       - type: rewrite
         source: /*
