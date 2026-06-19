@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Playfair Display", Georgia, Cambria, serif;
+}
+
+/* Custom styles for professional scrollbars & glassy effects if needed */
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased selection:bg-indigo-600/30 selection:text-indigo-200 font-sans;
+  }
+}
+
+/* Custom fade-in animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Custom scrollbar style */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #020617; /* Slate 950 */
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b; /* Slate 800 */
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #312e81; /* Indigo 900 */
+}
+
+/* Quill Custom Dark Theme Styling */
+.ql-toolbar.ql-snow {
+  background-color: #0f172a !important; /* Slate 900 */
+  border-color: #1e293b !important; /* Slate 800 */
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.ql-container.ql-snow {
+  background-color: #020617 !important; /* Slate 950 */
+  border-color: #1e293b !important; /* Slate 800 */
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  font-family: "Playfair Display", Georgia, Cambria, serif;
+  font-size: 0.875rem; /* text-sm */
+  color: #e2e8f0 !important; /* slate-200 */
+}
+
+/* Make toolbar items lighter so they stand out on dark background */
+.ql-snow .ql-stroke {
+  stroke: #94a3b8 !important; /* slate-400 */
+}
+.ql-snow .ql-fill {
+  fill: #94a3b8 !important; /* slate-400 */
+}
+.ql-snow .ql-picker {
+  color: #94a3b8 !important;
+}
+
+/* Hover and active states for toolbar */
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke {
+  stroke: #6366f1 !important; /* indigo-500 */
+}
+
+.ql-snow.ql-toolbar button:hover .ql-fill,
+.ql-snow.ql-toolbar button.ql-active .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill {
+  fill: #6366f1 !important;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active {
+  color: #6366f1 !important;
+}
+
+.ql-snow .ql-picker-options {
+  background-color: #0f172a !important; /* slate-900 */
+  border-color: #1e293b !important;
+}
+
+.ql-snow .ql-picker-options .ql-picker-item {
+  color: #94a3b8 !important;
+}
+
+.ql-snow .ql-picker-options .ql-picker-item:hover,
+.ql-snow .ql-picker-options .ql-picker-item.ql-selected {
+  color: #6366f1 !important;
+}
+
+/* Editor height and scrolling */
+.ql-container {
+  min-height: 220px;
+}
+.ql-editor {
+  min-height: 220px;
+  line-height: 1.75;
+}
+.ql-editor.ql-blank::before {
+  color: #475569 !important; /* slate-600 */
+  font-style: italic;
+}
+
+/* Rich Text Render Styles */
+.rich-text {
+  line-height: 1.8;
+}
+.rich-text h1, .rich-text h2, .rich-text h3, .rich-text h4, .rich-text h5, .rich-text h6 {
+  font-family: "Playfair Display", Georgia, Cambria, serif;
+  color: #f1f5f9;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.rich-text h1 { font-size: 2.25rem; font-weight: 800; }
+.rich-text h2 { font-size: 1.875rem; font-weight: 700; }
+.rich-text h3 { font-size: 1.5rem; font-weight: 600; }
+.rich-text h4 { font-size: 1.25rem; font-weight: 600; }
+.rich-text p {
+  margin-bottom: 1.25rem;
+}
+.rich-text strong {
+  font-weight: 700;
+  color: #f1f5f9;
+}
+.rich-text em {
+  font-style: italic;
+}
+.rich-text u {
+  text-decoration: underline;
+}
+.rich-text blockquote {
+  border-left: 4px solid #6366f1; /* indigo-500 */
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #94a3b8; /* slate-400 */
+}
+.rich-text ul {
+  list-style-type: disc;
+  padding-left: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+.rich-text ol {
+  list-style-type: decimal;
+  padding-left: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+.rich-text li {
+  margin-bottom: 0.5rem;
+}
+.rich-text a {
+  color: #818cf8; /* indigo-400 */
+  text-decoration: underline;
+}
+.rich-text a:hover {
+  color: #a5b4fc; /* indigo-300 */
+}
+
