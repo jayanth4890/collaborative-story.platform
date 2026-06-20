@@ -137,25 +137,29 @@ const Dashboard = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const handleRefresh = () => {
+    const handleInvitationUpdate = () => {
+      fetchDashboardData();
+    };
+
+    const handleContributionUpdate = () => {
       fetchDashboardData();
       if (activeTab === 'analytics') {
         fetchAnalytics();
       }
     };
 
-    socket.on('invitation_received', handleRefresh);
-    socket.on('invitation_accepted', handleRefresh);
-    socket.on('contribution_submitted', handleRefresh);
-    socket.on('contribution_approved', handleRefresh);
-    socket.on('contribution_rejected', handleRefresh);
+    socket.on('invitation_received', handleInvitationUpdate);
+    socket.on('invitation_accepted', handleInvitationUpdate);
+    socket.on('contribution_submitted', handleContributionUpdate);
+    socket.on('contribution_approved', handleContributionUpdate);
+    socket.on('contribution_rejected', handleContributionUpdate);
 
     return () => {
-      socket.off('invitation_received', handleRefresh);
-      socket.off('invitation_accepted', handleRefresh);
-      socket.off('contribution_submitted', handleRefresh);
-      socket.off('contribution_approved', handleRefresh);
-      socket.off('contribution_rejected', handleRefresh);
+      socket.off('invitation_received', handleInvitationUpdate);
+      socket.off('invitation_accepted', handleInvitationUpdate);
+      socket.off('contribution_submitted', handleContributionUpdate);
+      socket.off('contribution_approved', handleContributionUpdate);
+      socket.off('contribution_rejected', handleContributionUpdate);
     };
   }, [socket, activeTab]);
 

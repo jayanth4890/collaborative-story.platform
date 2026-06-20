@@ -9,28 +9,31 @@ const Invitation = require('../models/Invitation');
  */
 const getAnalytics = async (req, res) => {
   try {
-    // 1. Core KPIs
-    const totalStories = await Story.countDocuments({});
-    const completedStories = await Story.countDocuments({ status: 'completed' });
-    const totalContributions = await Contribution.countDocuments({});
-    const pendingInvitations = await Invitation.countDocuments({ status: 'pending' });
+    // 1. Core KPIs — run all counts concurrently
+    const [totalStories, completedStories, totalContributions, pendingInvitations, collaboratorAgg] =
+      await Promise.all([
+        Story.countDocuments({}),
+        Story.countDocuments({ status: 'completed' }),
+        Contribution.countDocuments({}),
+        Invitation.countDocuments({ status: 'pending' }),
+        Story.aggregate([
+          {
+            $project: {
+              people: {
+                $concatArrays: [['$author'], { $ifNull: ['$contributors', []] }],
+              },
+            },
+          },
+          { $unwind: '$people' },
+          { $group: { _id: '$people' } },
+          { $count: 'count' },
+        ]),
+      ]);
 
-    // Calculate active unique collaborators (authors + contributors)
-    const stories = await Story.find({});
-    const collaboratorIds = new Set();
-    stories.forEach((story) => {
-      if (story.author) {
-        collaboratorIds.add(story.author.toString());
-      }
-      if (story.contributors && story.contributors.length > 0) {
-        story.contributors.forEach((c) => collaboratorIds.add(c.toString()));
-      }
-    });
-    const activeCollaborators = collaboratorIds.size;
+    const activeCollaborators = collaboratorAgg[0]?.count || 0;
 
-    // Calculate completion rate percentage
-    const completionRate = totalStories > 0 
-      ? Math.round((completedStories / totalStories) * 100) 
+    const completionRate = totalStories > 0
+      ? Math.round((completedStories / totalStories) * 100)
       : 0;
 
     // 2. Charts Data

@@ -11,14 +11,23 @@ const AuthCallback = () => {
 
   useEffect(() => {
     const initOAuth = async () => {
-      try {
-        await refreshUser();
-        showToast('Successfully logged in with Google!', 'success');
-        navigate('/');
-      } catch (err) {
-        console.error('OAuth loading error:', err);
-        showToast('Failed to complete Google sign-in.', 'error');
-        navigate('/login');
+      const maxAttempts = 3;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          await refreshUser();
+          showToast('Successfully logged in with Google!', 'success');
+          navigate('/', { replace: true });
+          return;
+        } catch (err) {
+          console.error(`[OAuth] refreshUser attempt ${attempt} failed:`, err);
+          if (attempt < maxAttempts) {
+            // Backend may be cold-starting on Render free tier — brief backoff before retry
+            await new Promise((resolve) => setTimeout(resolve, 1200 * attempt));
+          } else {
+            showToast('Failed to complete Google sign-in. Please try again.', 'error');
+            navigate('/login?error=session_failed', { replace: true });
+          }
+        }
       }
     };
 

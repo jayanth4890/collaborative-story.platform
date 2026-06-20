@@ -276,6 +276,7 @@ const StoryDetails = () => {
 
   // Export PDF
   const handleExportPDF = async () => {
+    setActionLoading(true);
     try {
       showToast('Preparing PDF download...', 'info');
       const res = await api.get(`/stories/${id}/export`, { responseType: 'blob' });
@@ -285,15 +286,18 @@ const StoryDetails = () => {
       
       const pdfLink = document.createElement('a');
       pdfLink.href = fileURL;
-      pdfLink.setAttribute('download', `${story.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_story.pdf`);
+      pdfLink.setAttribute('download', `${story?.title?.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'story'}_story.pdf`);
       document.body.appendChild(pdfLink);
       
       pdfLink.click();
       pdfLink.remove();
+      URL.revokeObjectURL(fileURL);
       showToast('PDF exported successfully!', 'success');
     } catch (err) {
-      console.error(err);
+      console.error('Export PDF error:', err);
       showToast('Failed to export story as PDF', 'error');
+    } finally {
+      setActionLoading(false);
     }
   };
 

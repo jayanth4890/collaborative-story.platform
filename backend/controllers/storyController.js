@@ -64,7 +64,8 @@ const getStories = async (req, res) => {
       .populate('contributors', 'username email')
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
     const pages = Math.ceil(total / limit);
     const hasMore = page < pages;
@@ -131,7 +132,8 @@ const getMyStories = async (req, res) => {
     })
       .populate('author', 'username email')
       .populate('contributors', 'username email')
-      .sort({ updatedAt: -1 });
+      .sort({ updatedAt: -1 })
+      .lean();
 
     res.json(stories);
   } catch (error) {
@@ -246,7 +248,7 @@ const exportStoryPDF = async (req, res) => {
       return res.status(404).json({ message: 'Story not found' });
     }
 
-    const isAuthor = story.author.toString() === req.user._id.toString();
+    const isAuthor = story.author._id.toString() === req.user._id.toString();
     const isContributor = story.contributors.some(
       (c) => c._id.toString() === req.user._id.toString()
     );
@@ -283,17 +285,6 @@ const deleteStory = async (req, res) => {
     console.error('Delete story error:', error.message);
     res.status(500).json({ message: 'Server error deleting story' });
   }
-};
-
-module.exports = {
-  createStory,
-  getStories,
-  getStoryById,
-  getMyStories,
-  updateStory,
-  completeStory,
-  exportStoryPDF,
-  deleteStory,
 };
 
 // @desc    Publish a story
@@ -340,7 +331,8 @@ const getPublicStories = async (req, res) => {
     const stories = await Story.find({ isPublic: true })
       .populate('author', 'username email')
       .populate('contributors', 'username email')
-      .sort({ publishedAt: -1 });
+      .sort({ publishedAt: -1 })
+      .lean();
 
     res.json(stories);
   } catch (error) {
@@ -467,7 +459,7 @@ const getBookmarkedStories = async (req, res) => {
         { path: 'author', select: 'username email' },
         { path: 'contributors', select: 'username email' }
       ]
-    });
+    }).lean();
     
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

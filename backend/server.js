@@ -41,6 +41,9 @@ const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
   : ['http://localhost:5173'];
 
+console.log(`[CONFIG] CORS allowed origins: ${allowedOrigins.join(', ')}`);
+console.log(`[CONFIG] OAuth redirect target (FRONTEND_URL): ${process.env.FRONTEND_URL}`);
+
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, postman, etc.)

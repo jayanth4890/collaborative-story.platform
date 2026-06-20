@@ -184,11 +184,13 @@ const deleteUser = async (req, res) => {
 
 const googleCallback = (req, res) => {
   if (!req.user) {
-    return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`);
+    console.error('[OAuth] googleCallback fired with no req.user — passport authentication failed upstream');
+    return res.redirect(`${process.env.FRONTEND_URL}/login?error=google_auth_failed`);
   }
   const token = generateToken(req.user._id);
   res.cookie('token', token, getCookieOptions());
-  res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback`);
+  console.log(`[OAuth] Cookie set for user ${req.user._id}, redirecting to ${process.env.FRONTEND_URL}/auth/callback`);
+  res.redirect(`${process.env.FRONTEND_URL}/auth/callback`);
 };
 
 const logoutUser = (req, res) => {
